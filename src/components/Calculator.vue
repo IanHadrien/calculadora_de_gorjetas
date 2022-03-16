@@ -11,15 +11,16 @@
         <div class="buttons">
           <input @click="buttonFive" class="five button" type="button" value="5%">
           <input @click="buttonTen" class="ten button" type="button" value="10%">
-          <input class="quinze button" type="button" value="15%">
-          <input class="vinteCinco button" type="button" value="25%">
-          <input class="cinquenta button" type="button" value="50%">
+          <input @click="buttonQuinze" class="quinze button" type="button" value="15%">
+          <input @click="buttonVinCin" class="vinteCinco button" type="button" value="25%">
+          <input @click="buttonCinq" class="cinquenta button" type="button" value="50%">
           <input class="custom button" type="button" value="Custom">
         </div>
       </div>
 
       <div class="numberOfPeople">
         <p class="textTip">Number of People</p>
+        <p id="Erro"></p>
         <input class="classInput" type="number" name="" id="inputPeople">
       </div>
     </div>
@@ -70,10 +71,6 @@ export default {
   },
 
   methods: {
-    // Porcentagem do total 15% de 142,55 = 21,38
-    // 21,38 / 5 = 4,27
-    // (142,55 / 5 ) + 4,27 = 32,78
-
     removeClass() {
       const buttonsInput = document.querySelectorAll('input.button');
 
@@ -88,19 +85,38 @@ export default {
       const value = document.querySelector('#inputBill').value;
       const person = document.querySelector('#inputPeople').value;
 
-      this.campovalue = value;
-      this.campoPerson = person;
+      const elementErro = document.querySelector('#Erro');
+      const elementPerson = document.querySelector('#inputPeople');
+
+      if(person === '') {
+        elementPerson.style.border = '2px solid rgb(228, 72, 72)';
+        console.log('erro 1');
+      } else if(person == 0) {
+        elementErro.innerHTML = 'Cant be zero';
+        elementPerson.style.border = '2px solid rgb(228, 72, 72)';
+        console.log('erro 2')
+      } else {
+        elementErro.innerHTML = '';
+        elementPerson.style.border = '1px solid hsl(189, 41%, 97%)';
+        this.campovalue = value;
+        this.campoPerson = person;
+      }
+    },
+
+    calculateTimAmount(value) {
+      let porcTen = (value * this.campovalue) / 100;
+      this.tipAmount = porcTen / this.campoPerson;
+      this.total = (this.campovalue / this.campoPerson) + this.tipAmount;
     },
 
     buttonFive() {
       this.campoValue();
       this.removeClass();
       const fiveButton = document.querySelector('.five');
-
-      let porcFive = (5 * this.campovalue) / 100;
-      this.tipAmount = porcFive / this.campoPerson;
-      this.total = (this.campovalue / this.campoPerson) + this.tipAmount;
-      console.log(this.total);
+      let fiveButtonValue = document.querySelector('.five').value;
+      const valuePorc = Number(fiveButtonValue.slice(0 , -1));
+      
+      this.calculateTimAmount(valuePorc);
 
       fiveButton.classList.add('activad');
     },
@@ -110,15 +126,48 @@ export default {
       this.removeClass();
       const tenButton = document.querySelector('.ten');
       let tenButtonValue = document.querySelector('.ten').value;
-      console.log(Number(tenButtonValue.slice(0 , -1)));
+      const valuePorc = Number(tenButtonValue.slice(0 , -1));
 
-      let porcTen = (10 * this.campovalue) / 100;
-      this.tipAmount = porcTen / this.campoPerson;
-      this.total = (this.campovalue / this.campoPerson) + this.tipAmount;
-      //console.log(this.total);
+      this.calculateTimAmount(valuePorc);
 
       tenButton.classList.add('activad');
-    }
+    },
+
+    buttonQuinze() {
+      this.campoValue();
+      this.removeClass();
+      const quinzeButton = document.querySelector('.quinze');
+      let quinzeButtonValue = document.querySelector('.quinze').value;
+      const valuePorc = Number(quinzeButtonValue.slice(0 , -1));
+
+      this.calculateTimAmount(valuePorc);
+
+      quinzeButton.classList.add('activad');
+    },
+
+    buttonVinCin() {
+      this.campoValue();
+      this.removeClass();
+      const VinCinButton = document.querySelector('.vinteCinco');
+      let VinCinButtonValue = document.querySelector('.vinteCinco').value;
+      const valuePorc = Number(VinCinButtonValue.slice(0 , -1));
+
+      this.calculateTimAmount(valuePorc);
+
+      VinCinButton.classList.add('activad');
+    },
+
+    buttonCinq() {
+      this.campoValue();
+      this.removeClass();
+      const CinqButton = document.querySelector('.cinquenta');
+      let CinqButtonValue = document.querySelector('.cinquenta').value;
+      const valuePorc = Number(CinqButtonValue.slice(0 , -1));
+
+      this.calculateTimAmount(valuePorc);
+
+      CinqButton.classList.add('activad');
+    },
   },
 
   mounted() {
@@ -158,6 +207,12 @@ export default {
     color: hsl(183, 100%, 15%);
   }
 
+  #Erro {
+    color: rgb(228, 72, 72);
+    font-size: 15px;
+    text-align: right;
+  }
+
   /* Bill */
   .bill {
     padding-bottom: 1.5rem;
@@ -166,10 +221,6 @@ export default {
   .bill p {
     color: hsl(183, 100%, 15%);
     padding-bottom: 0.5rem;
-  }
-
-  .bill input:host {
-    border: 1px solid red;
   }
 
   /* Select Tip */
