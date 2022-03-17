@@ -14,7 +14,7 @@
           <input @click="buttonQuinze" class="quinze button" type="button" value="15%">
           <input @click="buttonVinCin" class="vinteCinco button" type="button" value="25%">
           <input @click="buttonCinq" class="cinquenta button" type="button" value="50%">
-          <input class="custom button" type="button" value="Custom">
+          <input class="custom" type="number" value="Custom" placeholder="Custom">
         </div>
       </div>
 
@@ -50,7 +50,7 @@
         </div>
 
         <div class="reset">
-          <input type="button" value="RESET">
+          <input @click="reset" type="button" value="RESET">
         </div>
       </div>
     </div>
@@ -90,11 +90,9 @@ export default {
 
       if(person === '') {
         elementPerson.style.border = '2px solid rgb(228, 72, 72)';
-        console.log('erro 1');
       } else if(person == 0) {
         elementErro.innerHTML = 'Cant be zero';
         elementPerson.style.border = '2px solid rgb(228, 72, 72)';
-        console.log('erro 2')
       } else {
         elementErro.innerHTML = '';
         elementPerson.style.border = '1px solid hsl(189, 41%, 97%)';
@@ -168,9 +166,34 @@ export default {
 
       CinqButton.classList.add('activad');
     },
+
+    reset() {
+      this.removeClass();
+      document.querySelector('#inputBill').value = '';
+      document.querySelector('#inputPeople').value = '';
+      document.querySelector('.custom').value = '';
+      this.campovalue = 0;
+      this.campoPerson = 0;
+      this.tipAmount =  0.00;
+      this.total = 0.00;
+    },
+
+    custom() {
+      const valueCustom = document.querySelector('.custom');
+
+      valueCustom.addEventListener('click', (e) => {
+        this.campoValue();
+        this.removeClass();
+      });
+
+      valueCustom.addEventListener('keyup', (e) => {
+        this.calculateTimAmount(Number(valueCustom.value));
+      });
+    }
   },
 
   mounted() {
+    this.custom();
   },
 }
 </script>
@@ -255,6 +278,9 @@ export default {
   }
 
   .buttons input.custom {
+    text-align: right;
+    padding-right: 0.5rem;
+    width: 100%;
     background-color: hsl(189, 41%, 97%);
     color: hsl(186, 14%, 43%);
   }
@@ -299,6 +325,7 @@ export default {
     font-size: 24px;
     width: 100%;
     padding: 0.5rem 0 0.5rem 0;
+    cursor: pointer;
   }
 
   /* Responsividade */
@@ -320,6 +347,7 @@ export default {
     }
 
     .result {
+      margin-left: 1rem;
       width: 400px;
     }
   }
